@@ -1,0 +1,117 @@
+---
+title: "Importing data and resolving issues"
+---
+
+```{r setup}
+pacman::p_load(tidyverse)
+pacman::p_load_gh("lukaswallrich/timesaveR")
+
+```
+
+## Your Turn 1
+
+* Add code to the setup chunk to import "qualtrics_example.sav" from the "data" folder. Use `haven::read_sav()`) and assign it to `survey_data`
+* Have a look at the data by clicking on it in the environment
+* Run `sjPlot::view_df(survey_data)` and briefly explore the output
+* Run `count(survey_data, Q2.2)` and look at the output
+* Run the ggplot code below and look at the output and warning message
+
+```{r}
+ggplot(survey_data, aes(Q2.2)) + geom_bar()
+```
+
+## Your Turn 2
+
+* Make a new factor variable gender based on Q2.2 (`as_factor()`)
+* Rename Q2.1 to age
+* Replace Q1.2_ in variable names with "consent". Note the order of arguments for str_replace: (string, pattern_to_look_for, replacement)
+
+```{r}
+
+```
+
+
+## Your Turn 3
+
+* Complete the code to calculate the three scales:
+  - UCLA loneliness: Q59_1 to Q59_20
+  - Warwick-Edinburgh wellbeing: Q60_1 to Q60_11
+  - covid_prevention: Q61_1 to Q61_12
+  
+* Calculate the scale scores. Use ?make_scales to check how to set `reversed` (hint: TRUE or FALSE), then run that line.
+
+* Have a look at the histograms and at `scales$descriptives`
+
+* Bind the scores to the survey_data
+
+NB: Most of the code is there - just fill in the ___
+
+```{r}
+scales_items <- list(
+  loneliness = paste0("Q59_", 1:20),
+  wellbeing = _____,
+  ____
+  )
+
+scales <- make_scales(ess_health, scales_items, reversed = ___)
+
+survey_data <- survey_data %>% bind_cols(_____)
+
+```
+
+## Your Turn 4
+
+Each line below has a few mistakes - most mean that the code won't run, others result in meaningless results. See how many you can fix within 5 minutes. Remember that you can try running a piece of code by highlighting it and pressing Ctrl + Enter.
+
+```{r}
+#This is correct - we need some data
+ess_mini <- read_rds("data/ess_mini.RDS")
+
+###
+# Transforming data
+###
+
+#I want to know the number of respondents and median working hours per country
+# 3 mistakes
+ess_mini %>% 
+  by(country) %>% 
+  summarise(median_work <- median(working_hours, na.rm = TRUE), N = count())
+
+#I want to add up two variables - assume that height + weight is meaningful
+#1 mistake that does not lead to an error - but to unexpected and meaningless results
+ess_mini %>% mutate(new_var = sum(height, weight, na.rm = TRUE))
+
+###
+# Plotting data
+###
+
+#I want to show the link between happy and working hours among women, 
+#with a scatter plot overlaid by linear regression lines coloured by country
+#2-3 mistakes per line
+ess_mini %>% filter(gender = Female) %>%
+  ggplot(aes(happy, working_hours) %>%
+    geom_point() + geom_smooth(color = "country")       
+
+###
+# Modeling
+###    
+
+# I want to test whether loneliness predicts lower wellbeing
+# For that, I need a p-value
+# Two changes needed to get there.
+survey_data %>%  
+  lm(wellbeing ~ loneliness)
+
+```
+
+***
+
+# Take Aways
+
+* Use `haven::read_sav()` to import SPSS files (and similar functions for SAS and Stata)
+
+* Note that R is not great with such labeled data - make sure you have the codebook elsewhere (e.g., from `sjPlot::view_df()`) and convert variables as necessary. `haven::zap_labels()` removes all labels from a dataset and can be useful when you run into trouble
+
+* `timesaveR::make_scales()` can be helpful for making scales, including reverse coding and assessing internal consistency.
+
+* Debugging code that is not doing what you expect it to do is the best way to learn :)
