@@ -5,7 +5,6 @@ title: "R Markdown"
 This is an R Markdown file. It contains plain text interspersed with grey chunks of code. You can use the file to take notes _and_ run code. For example, you can write your name on the line below. Try it: 
 
 
-
 ```{r}
 # You can write code in chunks that look like this.
 # This chunk uses the code plot(cars) to plot a data set.

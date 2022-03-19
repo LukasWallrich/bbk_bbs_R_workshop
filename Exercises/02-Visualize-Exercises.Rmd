@@ -4,16 +4,17 @@ title: "Visualize Data"
 
 ## Your Turn 0
 
-Add a setup chunk that loads the tidyverse packages and the dataset. For the dataset, use `ess_mini <- read_rds("ess_mini.RDS")` *after* you have loaded the tidyverse.
+Add a setup chunk that loads the tidyverse packages and the dataset. For the dataset, use 
+ess_mini <- data/read_rds("ess_mini.RDS")
+*after* you have loaded the tidyverse.
 
 
 
 ## Your Turn 1
 
 Run the code on the slide to make a graph. Pay strict attention to spelling, capitalization, and parentheses!
-
 ```{r}
-
+ 
 ```
 
 ## Your Turn 2
