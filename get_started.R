@@ -4,4 +4,5 @@
 
 install.packages("pacman")
 
-pacman::p_load(tidyverse, lavaan, lme4, easystats, modelsummary)
+pacman::p_load(tidyverse, lavaan, lme4, performance, modelsummary, interactions, sjPlot)
+pacman::p_load_current_gh("lukaswallrich/timesaveR")
