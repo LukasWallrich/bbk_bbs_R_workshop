@@ -1,0 +1,184 @@
+---
+title: "Visualize Data"
+---
+
+## Your Turn 0
+
+Add a setup chunk that loads the tidyverse packages and the dataset. For the dataset, use `ess_mini <- read_rds(“ess_mini.RDS)` *after* you have loaded the tidyverse.
+
+```{r setup}
+pacman::p_load(tidyverse)
+ess_mini <- read_rds("data/ess_mini.RDS")
+```
+
+
+```{r}
+ess_mini
+```
+
+
+## Your Turn 1
+
+Run the code on the slide to make a graph. Pay strict attention to spelling, capitalization, and parentheses!
+
+```{r}
+ggplot(data = ess_mini) +
+  geom_point(mapping = aes(x = height, y = weight))
+```
+
+## Your Turn 2
+
+Add `color`, `size`, `alpha`, and `shape` aesthetics to your graph. Experiment.  
+
+```{r}
+ggplot(data = ess_mini) +
+  geom_point(mapping = aes(x = height, y = weight, color = gender, shape = country))
+```
+
+## Help Me
+
+What do `facet_grid()` and `facet_wrap()` do? 
+(run the code, interpret, convince your group)
+
+```{r}
+# Makes a plot that the commands below will modify
+p <- ggplot(data = ess_mini) +
+  geom_point(mapping = aes(x = height, y = weight), alpha = 0.1)
+
+p + facet_grid(rows = vars(country))
+p + facet_grid(cols = vars(country))
+p + facet_grid(rows = vars(country), cols = vars(gender))
+p + facet_wrap(vars(main_activity))
+```
+
+## Your Turn 3
+
+Replace this scatterplot with one that draws boxplots. Use the cheatsheet. Try your best guess.
+
+```{r}
+ggplot(data = ess_mini) +
+  geom_point(mapping = aes(country, working_hours, color = gender))
+```
+
+## Your Turn 5
+
+Make a histogram of the `working_hours` variable from `ess_mini`. Hint: do not supply a y variable.
+
+```{r}
+ggplot(ess_mini) + 
+  geom_histogram(aes(x = working_hours)) + 
+  facet_wrap(vars(country))
+
+ggplot(ess_mini) + 
+  geom_histogram(aes(x = working_hours, fill = working_hours %% 5 == 0), binwidth = 1) +
+  labs(fill = "Divisible by 5")
+
+ggplot(ess_mini) + 
+  geom_histogram(aes(x = working_hours), binwidth = 5) 
+
+
+ggplot(ess_mini) + 
+  geom_histogram(aes(x = working_hours)) + 
+  facet_wrap(vars(country))
+
+```
+
+## Your Turn 5
+
+Use the help page for `geom_histogram` to make the bins 5 units wide.
+Bonus: use the help page for `facet_wrap` to free the scales for the y-axis.
+
+```{r}
+ggplot(ess_mini) + 
+  geom_histogram(aes(x = working_hours), binwidth = 5) + 
+  facet_wrap(vars(country), scales = "free_y")
+
+
+ggplot(ess_mini) + 
+  stat_ecdf(aes(x = working_hours, color = country, linetype = gender))
+
+```
+
+## Your Turn 6
+
+Make a bar chart of `main_activity` colored by `country`. Note that `geom_bar` accepts both a `color` and a `fill` aesthetic - experiment to see the difference and decide which you need. 
+
+```{r}
+ggplot(ess_mini) +
+  geom_bar(aes(y = main_activity, fill = gender))
+
+ggplot(ess_mini) +
+  geom_bar(aes(y = main_activity, fill = gender), position = "fill")
+
+```
+
+## Quiz
+
+What will this code do?
+
+```{r}
+ggplot(ess_mini) + 
+  geom_point(aes(height, weight)) +
+  geom_smooth(aes(height, weight))
+
+ggplot(ess_mini, aes(height, weight)) + 
+  geom_point(aes(color = gender)) +
+  geom_smooth()
+
+ggsave("g.png")
+
+```
+
+## Quiz
+
+What is different about this plot? Run the code!
+
+```{r}
+p <- ggplot(ess_mini, aes(height, weight)) + 
+  geom_point() +
+  geom_smooth()
+
+library(plotly)
+ggplotly(p)
+```
+
+***
+
+# Take aways
+
+You can use this code template to make thousands of graphs with **ggplot2**.
+
+```{r eval = FALSE}
+ggplot(data = <DATA>) +
+  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+```
+
+Hint: if you want your plots to look more "journal-ready" you can add `+ jtools::theme_apa(legend.use.title = TRUE)` to use that theme provided by the `jtools` package. For that, you need to install that package, e.g. by running `install.packages("jtools")` in the Console.
+
+## Complete example - the gapminder graph
+
+This is an example pulling together many different functions - you certainly don't need to understand all of that, but might find it helpful as a starting point for further exploration.
+
+```{r}
+pacman::p_load(dslabs, jtools, scales) #Teaching package that contains the gapminder dataset
+
+#Filter dataset to contain 4 years - we'll learn how to do that next
+gapminder <- gapminder %>% filter(year %in% c(1960, 1980, 2000, 2010)) %>% 
+  mutate(gdp_per_capita = gdp/population)
+
+ggplot(gapminder, aes(x=gdp_per_capita, y=life_expectancy, col=continent, size=population/10^6)) +
+  #^ Population converted to millions
+  geom_point(alpha = .5)  + 
+  scale_x_continuous(trans = scales::log2_trans()) +
+  #Log transformation moved here - that gives nicer labels
+  scale_size(name = "Population (M)", range=c(.1, 15)) + 
+  #Increased range makes largest points larger
+  scale_color_discrete(name="Continent") + 
+  facet_wrap(vars(year)) + 
+  jtools::theme_apa(legend.use.title = TRUE) + 
+  labs(title = "The past 50 years: Greater wealth and greater health",
+       x = "GDP per capita (USD/year)",
+       y = "Life expectancy (years)")
+```
+
+

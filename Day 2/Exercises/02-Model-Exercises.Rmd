@@ -1,0 +1,117 @@
+---
+title: "Models"
+---
+
+```{r setup}
+pacman::p_load(tidyverse, broom)
+pacman::p_load_gh("LukasWallrich/timesaveR")
+
+ess_mini <- read_rds("data/ess_mini.RDS")
+```
+
+## Your Turn 1
+
+* Have a look at the code above to see how "ess_mini.RDS" is loaded from the "data" folder 
+* Filter respondents from the UK (where country is "GB") and save in (`<-`) ess_mini_UK
+* Create a boxplot to show working hours for males and females
+* Calculate mean working hours for males and females
+
+```{r}
+
+```
+
+
+## Your Turn 2
+
+* Run a t.test to compare working hours to test whether working hours significantly differ between men and women in the UK.
+* Read through the output - what do you see?
+
+```{r}
+
+```
+
+## Your Turn 3
+
+Test whether mean happiness differs between (pairs of) countries.
+
+```{r}
+
+```
+
+## Reading practice
+
+How does this code work?
+
+```{r}
+ess_mini %>% 
+    mutate(gender_country = paste(gender, country)) %>%
+    pairwise_t_tests(height, gender_country, p.adjust.method = "none") %>% 
+    filter(str_detect(var_1, "Male") & str_detect(var_2, "Male") |
+              str_detect(var_1, "Female") & str_detect(var_2, "Female")) %>%
+    arrange(desc(abs(cohens_d))) %>%
+    select(var_1, var_2, apa)
+```
+
+
+## Your Turn 4
+
+Test whether happiness and health are correlated
+
+Calculate both Pearson’s r and Spearman’s rho.
+Remember ? to get details on arguments: ?cor.test
+
+```{r}
+
+```
+
+## Your Turn 5
+
+Explore the relationship between body mass index and self-reported health.
+
+* Add a bmi variable to the ess_mini dataset (which dplyr verb was that yet again?). bmi is defined as the weight divided by the height in m squared (e.g., it might be 80/(180/100)^2 for someone who weighs 80 kg and is 180 cm tall)
+
+* Add `+ geom_smooth(method = "lm")` to ggplot code below and have a look at the result. What relationships do you see?
+
+```{r}
+
+ess_mini <- ____
+
+ess_mini %>%
+     ggplot(aes(____)) +
+     geom_jitter(alpha = ____) + 
+     _____
+
+lm(____) %>% summary(____)
+
+```
+
+
+## Your Turn 6
+
+Check whether our regression model meets the key assumptions
+
+* Save your health ~ bmi + gender lm-model into `mod`
+* Install and load the performance and see packages (`pacman::p_load` takes care of installing *and* loading)
+* Test the model with `check_model(mod)`
+* Discuss the results with a partner
+
+```{r}
+
+
+```
+
+***
+
+# Take Aways
+
+* Use `t.test()`, `cor.test()` and `lm()` to conduct simple statistical tests
+
+* Specify models with formulae where `~` means 'is predicted by'
+
+* Consider `pairwise_t_tests()`, `cor_matrix()` and `lm_std()` from `timesaveR` to facilitate common 'next steps'
+
+* Use R to create publication ready tables - try out `report_cor_table()`, `report_lm_with_std()` and `report_cat_vars()` from `timesaveR` or more general functions from the `modelsummary` package
+
+* Use `glance()`, `tidy()`, and `augment()` from the **broom** package to return model values in a data frame.
+
+* Use `check_model()` from the `performance `package to quickly test how an `lm()`-model performs with respect to they assumptions made for linear regression

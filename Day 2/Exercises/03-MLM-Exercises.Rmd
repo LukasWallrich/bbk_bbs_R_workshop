@@ -1,0 +1,85 @@
+---
+title: "Multi-level modeling"
+---
+
+```{r setup}
+pacman::p_load(tidyverse, broom, lmerTest, sjPlot)
+ess_work <- read_rds("data/ess_work.RDS")
+```
+
+## Your Turn 1
+
+* Note that we are switching to a new dataset - ess_work, load it above
+* Add a linear regression line to the plot below
+* Then copy the plot and add color = cntry to the mapping - what do you observe about the relationship between health and happiness?
+
+```{r}
+ggplot(ess_work, aes(health, happy)) + 
+  geom_jitter(alpha = .1) 
+
+```
+
+## Your Turn 2
+
+* Test whether health predicts happiness, using lm
+* Test this again, using lmer and adding a random slope per country (`cntry`) (syntax: `lmer(IV ~ DV + (1|group), data)`)
+* Compare the results
+
+
+```{r}
+
+```
+
+
+
+## Your Turn 3
+
+* Take the lmer code from step 2 and add random slopes for `health` per country
+* Add gender (`gndr`) as a fixed effect (just like a predictor in lm)
+* Have a look at the summary() - is gender significant? What else has changed?
+* Use ranova() to check whether the random slopes are significant.    
+
+```{r}
+
+```
+
+## Visualise random effects
+
+* Save your model from the last step into an object (`mod1 <- lmer(...`)
+* Run the following code to see the random effects plot
+
+```{r}
+plot_model(mod1, type = "re") + 
+  geom_hline(yintercept = 0)
+```
+
+## Your Turn 4: Bringing it all together + cross-level interactions
+
+
+* Filter `ess_work` to create a dataset that only includes women (`gender` variable).
+* Create an lmer model predicting working hours (`wkhtot`) depending on whether they have a `young_child` and include random intercepts per country.
+* Add `gender_bias_men` as a predictor that interacts with `young_child` (remember: interactions are added by using * rather than +)
+* Have a look at the summary: is there evidence for that interaction?
+* Now add a random slope for `young_child` - what changes?
+
+
+```{r}
+
+```
+
+NB: For the `gender_bias_men`-variable, I've calculated how much gender bias men in each country show based on the `aftjbyc` variable in the ESS. It is the difference in how much they approve of working fathers vs. working mothers of children below 3 years old.
+
+
+***
+
+# Take Aways
+
+* Use multilevel models when observations are not independent
+
+* `lme4` package (with `lmerTest` if you want p-values) can estimate such models
+
+* Random intercepts for `group` are specified by adding `+ (1 | group)` to the formula
+
+* Random slopes for `pred` in each `group` are specified by adding `+ (pred | group)` to the formula (note that the intercept is automatically added as well, no need to type the 1 if you have random slopes. It can be suppressed, but is usually wanted).
+
+* Use `plot_model()` from the sjPlot package to plot any regression model. type = "re" gives random effects, and type = "int" gives interaction plots.
