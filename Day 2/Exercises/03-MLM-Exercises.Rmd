@@ -3,7 +3,7 @@ title: "Multi-level modeling"
 ---
 
 ```{r setup}
-pacman::p_load(tidyverse, broom, lmerTest, sjPlot)
+pacman::p_load(tidyverse, broom, lmerTest, sjPlot, glmmTMB)
 ess_work <- read_rds("data/ess_work.RDS")
 ```
 
@@ -26,10 +26,6 @@ ggplot(ess_work, aes(health, happy)) +
 * Compare the results
 
 
-```{r}
-
-```
-
 
 
 ## Your Turn 3
@@ -43,14 +39,14 @@ ggplot(ess_work, aes(health, happy)) +
 
 ```
 
-## Visualise random effects
+## Your Turn 3a - visualise random effects
 
 * Save your model from the last step into an object (`mod1 <- lmer(...`)
-* Run the following code to see the random effects plot
+* Use plot_model() to plot the random effects. Check ?plot_model to identify how to plot random effects and how to sort the estimates
+* Use + geom_hline(yintercept = 0) to highlight 0 (i.e. no association)
 
 ```{r}
-plot_model(mod1, type = "re") + 
-  geom_hline(yintercept = 0)
+
 ```
 
 ## Your Turn 4: Bringing it all together + cross-level interactions

@@ -71,23 +71,24 @@ ess_mini <- read_rds("data/ess_mini.RDS")
 # Transforming data
 ###
 
-#I want to know the number of respondents and median working hours per country
+# I want to know the number of respondents and median working hours per country
 # 3 mistakes
 ess_mini %>% 
   by(country) %>% 
   summarise(median_work <- median(working_hours, na.rm = TRUE), N = count())
 
-#I want to add up two variables - assume that height + weight is meaningful
-#1 mistake that does not lead to an error - but to unexpected and meaningless results
+# I want to add up two variables - assume that height + weight is meaningful
+# 1 mistake that does not lead to an error - but to unexpected and meaningless results
+# So make sure to look at the output
 ess_mini %>% mutate(new_var = sum(height, weight, na.rm = TRUE))
 
 ###
 # Plotting data
 ###
 
-#I want to show the link between happy and working hours among women, 
-#with a scatter plot overlaid by linear regression lines coloured by country
-#2-3 mistakes per line
+# I want to show the link between happy and working hours among women, 
+# with a scatter plot overlaid by linear regression lines coloured by country
+# 2-3 mistakes per line
 ess_mini %>% filter(gender = Female) %>%
   ggplot(aes(happy, working_hours) %>%
     geom_point() + geom_smooth(color = "country")       

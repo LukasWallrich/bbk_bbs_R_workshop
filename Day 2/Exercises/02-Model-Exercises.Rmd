@@ -17,6 +17,14 @@ ess_mini <- read_rds("data/ess_mini.RDS")
 * Calculate mean working hours for males and females
 
 ```{r}
+ess_mini_UK <- ess_mini %>% filter(country == "GB")
+ess_mini_UK <-  filter(ess_mini, country == "GB")
+
+ggplot(ess_mini_UK, aes(x = gender, y= working_hours)) + geom_boxplot()
+
+ess_mini_UK %>%
+  group_by(gender) %>%
+  summarise(mean(working_hours, na.rm = TRUE))
 
 ```
 
@@ -27,7 +35,9 @@ ess_mini <- read_rds("data/ess_mini.RDS")
 * Read through the output - what do you see?
 
 ```{r}
+t.test(working_hours ~gender, ess_mini_UK)
 
+pairwise_t_tests(data = ess_mini, happy ~ country, p.adjust.method = "bonferroni") %>% dplyr::select(var_2, var_1, apa)
 ```
 
 ## Your Turn 3
@@ -61,7 +71,7 @@ Calculate both Pearson’s r and Spearman’s rho.
 Remember ? to get details on arguments: ?cor.test
 
 ```{r}
-
+?cor.test
 ```
 
 ## Your Turn 5
@@ -72,8 +82,9 @@ Explore the relationship between body mass index and self-reported health.
 
 * Add `+ geom_smooth(method = "lm")` to ggplot code below and have a look at the result. What relationships do you see?
 
-```{r}
+* Run the lm() model and pipe it into summary(). What parts can you interpret?
 
+```{r}
 ess_mini <- ____
 
 ess_mini %>%
@@ -81,8 +92,7 @@ ess_mini %>%
      geom_jitter(alpha = ____) + 
      _____
 
-lm(____) %>% summary(____)
-
+lm(___ 
 ```
 
 

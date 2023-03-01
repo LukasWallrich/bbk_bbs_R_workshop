@@ -5,8 +5,8 @@ title: "Visualize Data"
 ## Your Turn 0
 
 Add a setup chunk that loads the tidyverse packages and the dataset. For the dataset, use 
-ess_mini <- data/read_rds("ess_mini.RDS")
-*after* you have loaded the tidyverse.
+ess_mini <- read_rds("data/ess_mini.RDS")
+*after* you have loaded the tidyverse. Remember that the code needs to be inside a code block to work.
 
 
 

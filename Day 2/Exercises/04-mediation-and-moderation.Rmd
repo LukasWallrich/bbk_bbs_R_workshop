@@ -3,10 +3,13 @@ title: "Scales, mediation and moderation"
 ---
 
 ```{r setup}
-pacman::p_load(tidyverse, broom, lavaan, processR, sjPlot, interactions)
+#pacman::p_load(tidyverse, broom, lavaan, processR, sjPlot, interactions)
+library(tidyverse)
+library(lavaan)
+
 ess_work <- read_rds("data/ess_work.RDS")
-contact <- read_csv("http://empower-training.de/Gold/contactData.csv")
-contact$InteractBlack[contact$InteractBlack > 0.30] <- 0.30 #Capping outliers
+contact <- read_csv("https://raw.githubusercontent.com/LukasWallrich/PhD_thesis/master/Chapter%203%20-%20mediation%20UK/analysis/AllResponses.csv")
+contact$InteractBlack[contact$InteractBlack > 0.30] <- 0.30 #Windsorizing outliers
 ```
 
 
@@ -14,6 +17,7 @@ contact$InteractBlack[contact$InteractBlack > 0.30] <- 0.30 #Capping outliers
 
 * Import the contact data (run the read_csv line above that gets it directly from my PhD repository).
 * Run two `lm()` models to test the preconditions for testing whether the association between BSSlurACT and InteractBlack is mediated by AffBLACK
+* Namely: is Y predicted by X and is Y predicted by M
 
 ```{r}
 
@@ -28,7 +32,7 @@ contact$InteractBlack[contact$InteractBlack > 0.30] <- 0.30 #Capping outliers
 
 ```{r}
 model_code <- ("
-_____
+___
                ")
 
 sem(model_code, contact, se = "bootstrap", bootstrap = 1000) %>% 
@@ -89,8 +93,9 @@ sem(model = _____, data = ____) %>%
 
 We established that in `contact` the association between `BSSlurACT` and `InteractBlack` is mediated by `AffBLACK`. Is that moderated by prejudicial beliefs (`WhAnxHALL`)?
 
-* Extract code for a Model 8 from the [processR web app](https://cardiomoon.shinyapps.io/processR/) (for that, you need to assign variables - I'd do that randomly and just take note)
+* Extract code for a Model 8 from the [processR web app](https://cardiomoon.shinyapps.io/processR/) (for that, you need to assign variables - unless you want to upload the dataset there, just take note and then search/replace the variables with the names you want to use)
 * Adjust that code to reflect the model you are interested in and save it into a `model_code` object
+* Set the random seed to 12345 so that we all get the same results.
 * Run `sem()` with 1000 bootstraps and look at the `summary()` of results.
 
 ```{r}

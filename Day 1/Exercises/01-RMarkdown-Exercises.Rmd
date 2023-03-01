@@ -15,17 +15,19 @@ plot(cars)
 
 Good job! The results of a code chunk will appear beneath the chunk. You can click the x above the results to make them go away, but let's not do that.
 
-You can open a new R Markdown file by going to **File > New File > R Markdown...**. Then click OK. But let's not open a new file now—keep reading this one! 
+You can open a new R Markdown file by going to **File > New File > R Markdown...**. Then click OK. But let's not open a new file now — keep reading this one! 
 
 # Adding chunks
 
 To add a new code chunk, press *Ctrl+Alt+I* (*Cmd+Option+I* on Mac), or click the *Insert* button at the top of this document, then select *R*. R Markdown will add a new, empty chunk at your cursor's location.
 
+
+
 Try making a code chunk below:
 
 
 
-Good job! For today, you should place all of your R code inside of code chunks.
+Good job! For today, you should **place all of your R code inside of code chunks.**
 
 ```{r}
 # Sometimes you might want to run only some of the code 
@@ -45,7 +47,7 @@ warning("You shouldn't run this!")
 # Sys.Date()
 ```
 
-Did you notice the green lines in the code chunk above? They are *code comments*, lines of text that R ignores when it runs the code. R will treat everything that appears after `#` on a line as a code comment. As a result, if you run the chunk above, nothing will happen—it is all code comments (and that's fine)!
+Did you notice the green lines in the code chunk above? They are *code comments*, lines of text that R ignores when it runs the code. R will treat everything that appears after `#` on a line as a code comment. As a result, if you run the chunk above, nothing will happen — it is all code comments (and that's fine)!
 
 Remove the `#` on the last line of the chunk above and then rerun the chunk. Can you tell what `Sys.Date()` does?
 

@@ -5,7 +5,7 @@ title: "Transform Data"
 ```{r setup}
 library(tidyverse)
 
-# Toy dataset to use
+# Toy dataset that we will use later on - ignore for now
 
 pollution <- tribble(
        ~city,   ~size, ~amount, 
@@ -23,7 +23,7 @@ pollution <- tribble(
 
 ## Your Turn 1
 
-Import the `babynames.csv` data set, which is in the `data` folder, as `babynames`. Then put the import code into the code chunk below. Make sure that you can run from there - you might need to adjust the path.
+Import the `babynames.csv` data set, which is in the `data` folder, as `babynames`. Then put the import code into the code chunk below. Make sure that you can run it from there - you might need to adjust the path.
 
 ```{r}
 babynames <- _____
