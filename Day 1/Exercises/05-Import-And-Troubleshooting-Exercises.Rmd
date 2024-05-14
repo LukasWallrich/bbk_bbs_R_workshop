@@ -4,6 +4,7 @@ title: "Importing data and resolving issues"
 
 ```{r setup}
 pacman::p_load(tidyverse)
+pacman::p_load(sjPlot)
 pacman::p_load_gh("lukaswallrich/timesaveR")
 
 ```
@@ -17,6 +18,7 @@ pacman::p_load_gh("lukaswallrich/timesaveR")
 * Run the ggplot code below and look at the output and warning message
 
 ```{r}
+
 ggplot(survey_data, aes(Q2.2)) + geom_bar()
 ```
 
@@ -24,9 +26,13 @@ ggplot(survey_data, aes(Q2.2)) + geom_bar()
 
 * Make a new factor variable gender based on Q2.2 (`as_factor()`)
 * Rename Q2.1 to age
-* Replace Q1.2_ in variable names with "consent". Note the order of arguments for str_replace: (string, pattern_to_look_for, replacement)
+* Replace Q1.2_ in variable names with "consent". Note the order of arguments for str_replace: (string, pattern_to_look_for, replacement), as in the example below.
 
 ```{r}
+_____
+_____
+
+names(survey_data) <- str_replace(names(survey_data), "_DO_", "_order_")
 
 ```
 
@@ -36,15 +42,15 @@ ggplot(survey_data, aes(Q2.2)) + geom_bar()
 * Complete the code to calculate the three scales:
   - UCLA loneliness: Q59_1 to Q59_20
   - Warwick-Edinburgh wellbeing: Q60_1 to Q60_11
-  - covid_prevention: Q61_1 to Q61_12
+  - Covid_prevention: Q61_1 to Q61_12
   
 * Calculate the scale scores. Use ?make_scales to check how to set `reversed` (hint: TRUE or FALSE), then run that line.
 
 * Have a look at the histograms and at `scales$descriptives`
 
-* Bind the scores to the survey_data
+* Bind the scores (`scales$scores`) to the survey_data
 
-NB: Most of the code is there - just fill in the ___
+NB: Much of the code is there - just fill in the ___
 
 ```{r}
 scales_items <- list(
@@ -111,8 +117,8 @@ survey_data %>%
 
 * Use `haven::read_sav()` to import SPSS files (and similar functions for SAS and Stata)
 
-* Note that R is not great with such labeled data - make sure you have the codebook elsewhere (e.g., from `sjPlot::view_df()`) and convert variables as necessary. `haven::zap_labels()` removes all labels from a dataset and can be useful when you run into trouble
+* Note that R is not great with such labeled data - make sure you have the codebook elsewhere (e.g., from `sjPlot::view_df()`) and convert variables as necessary, with `as_factor()` for categorical variables. `haven::zap_labels()` removes all labels from a dataset and can be useful when you run into trouble
 
 * `timesaveR::make_scales()` can be helpful for making scales, including reverse coding and assessing internal consistency.
 
-* Debugging code that is not doing what you expect it to do is the best way to learn :)
+* Debugging code that is not doing what you expect it to do is the best way to learn :). ChatGPT and co can be very helpful there.

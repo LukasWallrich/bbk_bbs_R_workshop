@@ -2,32 +2,31 @@
 title: "R Markdown"
 ---
 
-This is an R Markdown file. It contains plain text interspersed with grey chunks of code. You can use the file to take notes _and_ run code. For example, you can write your name on the line below. Try it: 
+This is an R Markdown file. It contains plain text interspersed with grey chunks of code. You can use the file to take notes _and_ run code - to keep your analyses and your interpretation in one place. For example, you can write your name on the line below. Try it: 
 
+Your name: _____
 
 ```{r}
 # You can write code in chunks that look like this.
 # This chunk uses the code plot(cars) to plot a data set.
 # To run the code, click the Green play button at the
-# top right of this chunk. Try it!
+# top right of this chunk (aka block). Try it!
 plot(cars)
 ```
 
-Good job! The results of a code chunk will appear beneath the chunk. You can click the x above the results to make them go away, but let's not do that.
+Good job! The results of a code chunk will appear beneath the chunk. You can click the x above the results to make them go away, but let's not do that. By the way: `cars` is just an inbuilt example dataset, and `plot` a very basic and limited function (that we will not use in this course).
 
 You can open a new R Markdown file by going to **File > New File > R Markdown...**. Then click OK. But let's not open a new file now — keep reading this one! 
 
 # Adding chunks
 
-To add a new code chunk, press *Ctrl+Alt+I* (*Cmd+Option+I* on Mac), or click the *Insert* button at the top of this document, then select *R*. R Markdown will add a new, empty chunk at your cursor's location.
-
-
+Generally, you will want to have a separate code chunk for each analysis. That way, code, output and your notes can stay close together, and you can identify problems more easily. To add a new code chunk click the *Insert* button at the top right of this document (the green block with a plus and a C inside), then select *R*. You can also press *Ctrl+Alt+I* (*Cmd+Option+I* on Mac). R Markdown will then add a new, empty chunk at your cursor's location.
 
 Try making a code chunk below:
 
 
 
-Good job! For today, you should **place all of your R code inside of code chunks.**
+Good job! For today, you should **place all of your R code inside of code chunks.** Be very careful that each code chunk starts with ```{r} and ends with ```, each on their own line. If you break that (e.g., by copy-pasting half a block), your code won't work.
 
 ```{r}
 # Sometimes you might want to run only some of the code 
@@ -41,9 +40,10 @@ warning("You shouldn't run this!")
 ```
 
 ```{r}
-# You can click the downward facing arrow to the left of the play button to run
-# every chunk above the current code chunk. This is useful if the code in your
-# chunk uses object that you made in previous chunks.
+# You can click the downward facing arrow to the left of the play button
+# in this chunk to run every chunk above the current code chunk. This is useful if 
+# the code in your chunk uses object that you made in previous chunks.
+
 # Sys.Date()
 ```
 
@@ -55,14 +55,18 @@ By the way, you only need to use code comments _inside_ of code chunks. R knows 
 
 # Text formatting
 
-Have you noticed the funny highlighting that appears in this document? R Markdown treats text surrounded by *asterisks*, **double asterisks**, and `backticks` in special ways. It is R Markdown's way of saying that these words are in
+Have you noticed the funny highlighting that appears in this document? R Markdown treats text surrounded by _underlines_, *asterisks*, **double asterisks**, and `backticks` in special ways. It is R Markdown's way of saying that these words are in
 
 - _italics_
 - *also italics*
 - **bold**, and
 - `code font`
 
-`*`, `**`, and \` are signals used by a text editing format known as `markdown`. R Markdown uses `markdown` to turn your plain looking .Rmd documents into polished reports. Let's give that a try.
+`*`, `**`, and \` are signals used by a text editing format known as `markdown`. The only other formatting convention there you should know is the use of # to indicate headings (and ## for sub-headings). While they represent comments *inside* code chunks, they should only be used for *headings* outside chunks.
+
+You can also use the ``Visual Editor` (by clicking `Visual` at the top left of this document), which can make it easier to make nice-looking documents - but it is not recommended for this course.
+
+R Markdown then turns your plain looking `.Rmd` documents into polished reports. Let's give that a try.
 
 # Reports
 
@@ -73,6 +77,8 @@ When you click the `knit` button at the top of an R Markdown file (like this one
 3. Saves the finished report alongside your .Rmd file
 
 Click the *knit* button at the top of this document or press *Cmd+Shift+K* (*Ctrl+Shift+K* on Windows) to render the finished report. The RStudio IDE will open the report so you can see its contents. By default, our reports will be HTML files. Try clicking *Knit* now. If you click on the small arrow next to *Knit*, you can create PDF and Word files as well, but that will likely require some extra packages.
+
+To make your research reproducible, you should be able to knit your markdown files at the end, and extract all your reported results from those reports. That means that your files should contain all your analysis code, and only the code needed for analysis. You can experiment with code in the Console as you go along, but always remember to copy it into the markdown file once it is done.
 
 Good job! You'll learn more about R Markdown throughout the day!
 

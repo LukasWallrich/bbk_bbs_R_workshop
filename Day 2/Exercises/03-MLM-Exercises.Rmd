@@ -11,7 +11,7 @@ ess_work <- read_rds("data/ess_work.RDS")
 
 * Note that we are switching to a new dataset - ess_work, load it above
 * Add a linear regression line to the plot below
-* Then copy the plot and add color = cntry to the mapping - what do you observe about the relationship between health and happiness?
+* Then copy the plot and add color = cntry to the mapping - what do you observe about the relationship between health and happiness? (NB: Here we use the original ESS variable names - such as cntry.)
 
 ```{r}
 ggplot(ess_work, aes(health, happy)) + 
@@ -22,10 +22,14 @@ ggplot(ess_work, aes(health, happy)) +
 ## Your Turn 2
 
 * Test whether health predicts happiness, using lm
-* Test this again, using lmer and adding a random slope per country (`cntry`) (syntax: `lmer(IV ~ DV + (1|group), data)`)
+* Test this again, using lmer and adding a random slope per country (`cntry`) (syntax: `lmer(IV ~ DV + (1|group), data)`). NB:
+   - If you run into issues with labelled data, remember that haven::zap_labels() can help.
+   - If you get confused by R's use of scientific notation, you can run `options(scipen=999)` to suppress it.
 * Compare the results
 
+```{r}
 
+```
 
 
 ## Your Turn 3
@@ -33,7 +37,7 @@ ggplot(ess_work, aes(health, happy)) +
 * Take the lmer code from step 2 and add random slopes for `health` per country
 * Add gender (`gndr`) as a fixed effect (just like a predictor in lm)
 * Have a look at the summary() - is gender significant? What else has changed?
-* Use ranova() to check whether the random slopes are significant.    
+* Use anova() to compare a model with and without the random slopes to check whether they are significant.
 
 ```{r}
 
@@ -70,12 +74,14 @@ NB: For the `gender_bias_men`-variable, I've calculated how much gender bias men
 
 # Take Aways
 
-* Use multilevel models when observations are not independent
+* Use multilevel models when observations are not independent, but nested within groups (e.g., repeated measures, or participants clustered in organisations).
 
-* `lme4` package (with `lmerTest` if you want p-values) can estimate such models
+* `lme4` package (with `lmerTest` if you want *p*-values) can estimate such models
 
 * Random intercepts for `group` are specified by adding `+ (1 | group)` to the formula
 
 * Random slopes for `pred` in each `group` are specified by adding `+ (pred | group)` to the formula (note that the intercept is automatically added as well, no need to type the 1 if you have random slopes. It can be suppressed, but is usually wanted).
 
-* Use `plot_model()` from the sjPlot package to plot any regression model. type = "re" gives random effects, and type = "int" gives interaction plots.
+* Use `anova()` to compare models, to see if the random effects are significant. Report the results one change at a time, e.g., first adding a random intercept, then adding a random slope.
+
+* Use `plot_model()` from the sjPlot package to plot any regression model. `type = "re"` gives random effects, and `type = "int"` gives interaction plots.

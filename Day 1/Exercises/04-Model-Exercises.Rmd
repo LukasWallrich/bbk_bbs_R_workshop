@@ -4,14 +4,15 @@ title: "Models"
 
 ```{r setup}
 pacman::p_load(tidyverse, broom)
-pacman::p_load_gh("LukasWallrich/timesaveR")
+pacman::p_load_gh("LukasWallrich/timesaveR") 
+# timesaveR is loaded from GitHub rather than CRAN, used for packages in development
 ```
 
 ## Your Turn 1
 
-* Import "ess_mini.RDS" from the "data" folder and include that code in the setup chunk 
+* Import "ess_mini.RDS" from the "data" folder
 * Filter respondents from the UK (where country is "GB") and save in (`<-`) ess_mini_UK
-* Create boxplot to show working hours for males and females
+* Create a boxplot to show working hours for males and females
 * Calculate mean working hours for males and females
 
 ```{r}
@@ -68,7 +69,9 @@ Explore the relationship between body mass index and self-reported health.
 
 * Add a bmi variable to the ess_mini dataset (which dplyr verb was that yet again?). bmi is defined as the weight divided by the height in m squared (e.g., it might be 80/(180/100)^2 for someone who weighs 80 kg and is 180 cm tall)
 
-* Add `+ geom_smooth(method = "lm")` to ggplot code below and have a look at the result. What relationships do you see?
+* Add `+ geom_smooth(method = "lm")` to the ggplot code below and have a look at the result. What relationships do you see?
+
+*(Hint: Be sure to replace each `_` before running the code)*
 
 ```{r}
 
@@ -112,4 +115,4 @@ Check whether our regression model meets the key assumptions
 
 * Use `glance()`, `tidy()`, and `augment()` from the **broom** package to return model values in a data frame.
 
-* Use `check_model()` from the `performance `package to quickly test how an `lm()`-model performs with respect to they assumptions made for linear regression
+* Use `check_model()` from the `performance `package to quickly test how your `lm()`-models (or more advanced linear models) performs with respect to the assumptions made for linear regression

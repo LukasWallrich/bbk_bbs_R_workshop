@@ -3,20 +3,38 @@ title: "Scales, mediation and moderation"
 ---
 
 ```{r setup}
-#pacman::p_load(tidyverse, broom, lavaan, processR, sjPlot, interactions)
-library(tidyverse)
-library(lavaan)
+pacman::p_load(tidyverse, broom, lavaan, processR, sjPlot, interactions)
+pacman::p_load_gh("lukaswallrich/timesaveR")
 
 ess_work <- read_rds("data/ess_work.RDS")
-contact <- read_csv("https://raw.githubusercontent.com/LukasWallrich/PhD_thesis/master/Chapter%203%20-%20mediation%20UK/analysis/AllResponses.csv")
-contact$InteractBlack[contact$InteractBlack > 0.30] <- 0.30 #Windsorizing outliers
+
+# We will also work with some data from my PhD - this code downloads it directly from GitHub and 
+# prepares it for analysis. You can read through the code to practice your understanding, but don't need to do anything with it
+
+contact <- read_csv("https://raw.githubusercontent.com/LukasWallrich/PhD_thesis/master/Chapter%203%20-%20mediation%20UK/analysis/AllResponses.csv", show_col_types = FALSE)
+
+contact <- contact %>% 
+  # Filter White respondents
+  filter(Ethnicity %in% c(10, 11, 12)) 
+
+# Create scales
+scales <- list(
+  affect_black = c("AffBlWarm", "AffBlNeg"),
+  bystander_intervention = c(paste0("BSSlur", 2:7)),
+  positive_contact = c("WhExpBlComplimented", "WhExpBlBefriended",
+                "WhExpBlMadeFeelWelcome", "WhExpBlSupported", "WhExpBlHelped")
+)
+
+scale_results <- make_scales(contact, scales, reversed = TRUE, print_hist = FALSE, harmonize_ranges = FALSE)
+
+contact <- bind_cols(contact, scale_results$scores)
 ```
 
 
 ## Your Turn 1
 
 * Import the contact data (run the read_csv line above that gets it directly from my PhD repository).
-* Run two `lm()` models to test the preconditions for testing whether the association between BSSlurACT and InteractBlack is mediated by AffBLACK
+* Run two `lm()` models to test the preconditions for testing whether the association between bystander_intervention and positive_contact (intergroup contact) is mediated by affect_black (affect towards Black people)
 * Namely: is Y predicted by X and is Y predicted by M
 
 ```{r}
@@ -26,14 +44,16 @@ contact$InteractBlack[contact$InteractBlack > 0.30] <- 0.30 #Windsorizing outlie
 
 ## Your Turn 2
 
-* Type the lavaan model into the blank (___)
+* Type the lavaan model into the blank (___), using the correct variable names
 * Run the whole block and interpret the output (NB: this will take ~20 seconds)
 
 
 ```{r}
 model_code <- ("
-___
+ _____
                ")
+
+set.seed(170524)
 
 sem(model_code, contact, se = "bootstrap", bootstrap = 1000) %>% 
   summary(ci = TRUE)
@@ -43,16 +63,25 @@ sem(model_code, contact, se = "bootstrap", bootstrap = 1000) %>%
 
 ## Your Turn 3
 
-* Test whether household income (`hinctnta`) moderates the relationship between health and happiness (in the ess_work data)
-- Run the `lm()` model testing whether health interacts with income in predicting happiness
-- Put the result into the `plot_model()` function with `type = "int"` - if it does not show what you want, try to switch the order of the predictors in `lm()`
+* Test whether education (`eduyrs`) moderates the relationship between health and happiness (in the `ess_work` data)
+  - Run the `lm()` model testing whether health interacts with income in predicting happiness
+  - Put the result into the `plot_model()` function with `type = "int"` and `mdrt.values = "meansd"` - if it does not show what you want, try to switch the order of the predictors in `lm()`.
 
-NB: `plot_model()` sometimes struggles with labelled data - therefore, it's worth using zap_labels() here.
+* There are some extreme outliers in `eduyrs` - to avoid issues, we will simply windsorize them (set them to the 1st and 99th percentile), in a real analysis, this would require further justification and exploration. Here, just run that code before the `lm()` model.
+
+NB: `plot_model()` sometimes struggles with labelled data - therefore, it's worth using zap_labels() here. Also, note that thist just returns a ggplot-object, so that you can format it easily.
 
 ```{r}
+ess_work <- ess_work %>% mutate(eduyrs = eduyrs %>%
+                                  pmax(quantile(., .01, na.rm = TRUE), .) %>% 
+                                  pmin(quantile(., .99, , na.rm = TRUE), .))
 
-mod_mod <- ess_UK %>% haven::zap_labels() %>% lm(____, data = .)
 
+mod_mod <- ess_work %>% haven::zap_labels() %>% lm(____, data = .)
+
+plot_model(______) + 
+  labs(title = "Predicted happiness by health and education") +
+  jtools::theme_apa()
 ```
 
 
@@ -61,7 +90,7 @@ mod_mod <- ess_UK %>% haven::zap_labels() %>% lm(____, data = .)
 You can use the code below to get all details needed to report simple slopes. `?interactions::sim_slopes` reveals many customisation options.
 
 ```{r}
-interactions::sim_slopes(mod_mod, pred = "health", modx = "hinctnta")
+interactions::sim_slopes(mod_mod, pred = "health", modx = "eduyrs")
 ```
 
 ## Your turn 4
@@ -70,36 +99,24 @@ interactions::sim_slopes(mod_mod, pred = "health", modx = "hinctnta")
 * Run the code and compare the output to the simple slopes above
 
 ```{r}
+
 model_code <- ("
-#Regression model
-happy ~ a * health + b * hinctnta + c * health:hinctnta
-
-#Ingredients for simple slopes
-hinctnta ~ ____ * 1
-hinctnta ~~ _____ * hinctnta
-
-#Simple slopes
-SDbelow := a + c * (M_hinctnta - ____(var_hinctnta))
-Mean := a + c * M_hinctnta
-SDabove:= _____
+  #Regression model
+  happy ~ a * health + b * eduyrs + c * health: eduyrs
+  
+  #Ingredients for simple slopes
+  eduyrs ~ ______ * 1
+  eduyrs ~~ ______ * eduyrs
+  
+  #Simple slopes
+  SDbelow := a + c * (____ - ____(______))
+  Mean := a + c * ______
+  SDabove:= a + c * _____
 ")
+
 
 sem(model = _____, data = ____) %>% 
   summary()
-
-```
-
-## Your turn 5
-
-We established that in `contact` the association between `BSSlurACT` and `InteractBlack` is mediated by `AffBLACK`. Is that moderated by prejudicial beliefs (`WhAnxHALL`)?
-
-* Extract code for a Model 8 from the [processR web app](https://cardiomoon.shinyapps.io/processR/) (for that, you need to assign variables - unless you want to upload the dataset there, just take note and then search/replace the variables with the names you want to use)
-* Adjust that code to reflect the model you are interested in and save it into a `model_code` object
-* Set the random seed to 12345 so that we all get the same results.
-* Run `sem()` with 1000 bootstraps and look at the `summary()` of results.
-
-```{r}
-
 
 ```
 
@@ -109,5 +126,5 @@ We established that in `contact` the association between `BSSlurACT` and `Intera
 # Take Aways
 
 * Mediation and moderation models can be coded in `lavaan` - highly flexible, and learning then also transfers to  SEM and other path modeling
-* Coding is not trivial - but no need to start from scratch. Many code examples can be found - most comprehensively in the processR package/webapp
-* Simpler tools are available - `JSmediation` package looks promising
+* Coding is not trivial - but no need to start from scratch. Many code examples can be found - most comprehensively in the processR package/[web app](https://cardiomoon.shinyapps.io/processR/)
+* Simpler tools are available - `JSmediation` package looks promising, and often for moderation, `lm()` and the simple decomposition functions shown above are sufficient.

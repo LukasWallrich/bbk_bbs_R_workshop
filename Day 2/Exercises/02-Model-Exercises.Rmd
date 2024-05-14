@@ -4,27 +4,18 @@ title: "Models"
 
 ```{r setup}
 pacman::p_load(tidyverse, broom)
-pacman::p_load_gh("LukasWallrich/timesaveR")
-
-ess_mini <- read_rds("data/ess_mini.RDS")
+pacman::p_load_gh("LukasWallrich/timesaveR") 
+# timesaveR is loaded from GitHub rather than CRAN, used for packages in development
 ```
 
 ## Your Turn 1
 
-* Have a look at the code above to see how "ess_mini.RDS" is loaded from the "data" folder 
+* Import "ess_mini.RDS" from the "data" folder
 * Filter respondents from the UK (where country is "GB") and save in (`<-`) ess_mini_UK
 * Create a boxplot to show working hours for males and females
 * Calculate mean working hours for males and females
 
 ```{r}
-ess_mini_UK <- ess_mini %>% filter(country == "GB")
-ess_mini_UK <-  filter(ess_mini, country == "GB")
-
-ggplot(ess_mini_UK, aes(x = gender, y= working_hours)) + geom_boxplot()
-
-ess_mini_UK %>%
-  group_by(gender) %>%
-  summarise(mean(working_hours, na.rm = TRUE))
 
 ```
 
@@ -35,9 +26,7 @@ ess_mini_UK %>%
 * Read through the output - what do you see?
 
 ```{r}
-t.test(working_hours ~gender, ess_mini_UK)
 
-pairwise_t_tests(data = ess_mini, happy ~ country, p.adjust.method = "bonferroni") %>% dplyr::select(var_2, var_1, apa)
 ```
 
 ## Your Turn 3
@@ -71,7 +60,7 @@ Calculate both Pearson’s r and Spearman’s rho.
 Remember ? to get details on arguments: ?cor.test
 
 ```{r}
-?cor.test
+
 ```
 
 ## Your Turn 5
@@ -80,11 +69,12 @@ Explore the relationship between body mass index and self-reported health.
 
 * Add a bmi variable to the ess_mini dataset (which dplyr verb was that yet again?). bmi is defined as the weight divided by the height in m squared (e.g., it might be 80/(180/100)^2 for someone who weighs 80 kg and is 180 cm tall)
 
-* Add `+ geom_smooth(method = "lm")` to ggplot code below and have a look at the result. What relationships do you see?
+* Add `+ geom_smooth(method = "lm")` to the ggplot code below and have a look at the result. What relationships do you see?
 
-* Run the lm() model and pipe it into summary(). What parts can you interpret?
+*(Hint: Be sure to replace each `_` before running the code)*
 
 ```{r}
+
 ess_mini <- ____
 
 ess_mini %>%
@@ -92,7 +82,8 @@ ess_mini %>%
      geom_jitter(alpha = ____) + 
      _____
 
-lm(___ 
+lm(____) %>% summary(____)
+
 ```
 
 
@@ -124,4 +115,4 @@ Check whether our regression model meets the key assumptions
 
 * Use `glance()`, `tidy()`, and `augment()` from the **broom** package to return model values in a data frame.
 
-* Use `check_model()` from the `performance `package to quickly test how an `lm()`-model performs with respect to they assumptions made for linear regression
+* Use `check_model()` from the `performance `package to quickly test how your `lm()`-models (or more advanced linear models) performs with respect to the assumptions made for linear regression

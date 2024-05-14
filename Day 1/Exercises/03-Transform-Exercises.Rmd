@@ -5,18 +5,6 @@ title: "Transform Data"
 ```{r setup}
 library(tidyverse)
 
-# Toy dataset that we will use later on - ignore for now
-
-pollution <- tribble(
-       ~city,   ~size, ~amount, 
-  "New York", "large",      23,
-  "New York", "small",      14,
-    "London", "large",      22,
-    "London", "small",      16,
-   "Beijing", "large",      121,
-   "Beijing", "small",      56
-)
-
 ```
 
 # Import Data
@@ -47,7 +35,7 @@ Use `filter`, `babynames`, and the logical operators to find:
 Use Boolean operators to return only the rows that contain:
 
 * _Boys_ named Sue  
-* Names that were used by exactly 5 or 6 children in 1880  
+* Names that were given to exactly 5 or 6 children in 1880  
 * Names that are one of Acura, Lexus, or Yugo
 
 ```{r}
@@ -60,6 +48,8 @@ Use arrange to find
 
 * the name that was most common in a single year (i.e. highest n)
 * the name that had the highest proportion in a single year (i.e. highest prop)
+
+Remember that R generally sorts from smallest to largest, so you may need to use `desc()` to reverse the order.
 
 ```{r}
 
@@ -80,8 +70,8 @@ select(babynames, name, prop)
 ess_mini <- read_rds("data/ess_mini.RDS")
 names(ess_mini) #See the column names
 
-select(ess_mini, height:happy)
-select(ess_mini, -c(main_activity, working_hours))
+select(ess_mini, height:happy) # Select from:to
+select(ess_mini, -c(main_activity, working_hours)) # Unselect columns
 
 select(ess_mini, starts_with("work"))
 select(ess_mini, ends_with("t"))
@@ -89,8 +79,7 @@ select(ess_mini, ends_with("t"))
 select(ess_mini, matches("ei")) #Contains "ei"
 select(ess_mini, matches("^.{6}$")) #6 characters long
 
-select(billboard, artist, track, num_range("wk", 10:15))
-
+select(billboard, artist, track, num_range("wk", 10:15)) # Select weeks 10 to 15
 ```
 
 
@@ -99,7 +88,6 @@ select(billboard, artist, track, num_range("wk", 10:15))
 Which of these is NOT a way to select the `name` and `n` columns together?
 
 ```{r}
-ess_mini_UK <- read_rds("data/ess_mini_UK.RDS")
 select(babynames, -c(year, sex, prop))
 select(babynames, name:n)
 select(babynames, starts_with("n"))
@@ -118,6 +106,8 @@ Use `%>%` to write a sequence of functions that:
 
 ```
 
+Note that you can also use |> to pipe the results of one function into the next. This is native to R, so does not require any additional packages - but %>% is still more common in the tidyverse.
+
 ## Your Turn 7 - Exam
 
 1. Trim `babynames` to just the rows that contain your `name` and your `sex`  - or simply your favourite US name
@@ -135,7 +125,7 @@ Copmplete the code below to extract the rows where `name == "Khaleesi"`. Then us
 1. The total number of children named Khaleesi
 2. The first year Khaleesi appeared in the data
 
-*(Hint: Be sure to remove each `_` before running the code)*
+*(Hint: Be sure to replace each `_` before running the code)*
 
 ```{r}
 babynames ___ 
@@ -147,7 +137,7 @@ babynames ___
 
 Use `group_by()`, `summarise()`, and `arrange()` to display the ten most popular names. Compute popularity as the *total* number of children of a single gender given a name.
 
-*(Hint: Be sure to remove each `_` before running the code)*
+*(Hint: Be sure to replace each `_` before running the code)*
 
 ```{r}
 babynames %>%
@@ -168,7 +158,7 @@ Use `group_by()` to calculate and then plot the total number of children born ea
 
 Use `mutate()` and `min_rank()`to rank each row in babynames from _largest_ n to lowest n.
 
-*(Hint: Be sure to remove each `_` before running the code)*
+*(Hint: Be sure to replace each `_` before running the code)*
 
 ```{r}
 babynames %>% 
@@ -180,6 +170,10 @@ babynames %>%
 Group `babynames` by **year** and re-rank the data. Then calculate the median rank for each name-sex combination across years, and arrange by that median rank.
 
 ```{r}
+babynames %>% 
+  group_by(year, sex) %>%
+  mutate(rank = min_rank(desc(n))) %>% 
+  filter(name == "Lukas")
 
 ```
 
@@ -191,7 +185,7 @@ Group `babynames` by **year** and re-rank the data. Then calculate the median ra
 * Arrange cases, with `arrange()`  
 * Extract variables with `select()`  
 
-* Make tables of summaries with `summarise()`  
+* Make tables of summaries with `summarise()` (NB: tidyverse support British and US spelling.) 
 * Make new variables, with `mutate()`  
 * Do groupwise operations with `group_by()`
 
@@ -213,15 +207,15 @@ babynames %>%
     group_by(year, sex) %>% 
     mutate(rank = min_rank(desc(prop))) %>% 
     group_by(name, sex) %>% 
-    summarise(median_rank = median(rank)) %>% 
+    summarise(median_rank = median(rank), .groups = "drop") %>% 
     group_by(sex) %>% 
     arrange(median_rank) %>% 
-    slice(1:10) %>% 
+    slice_min(median_rank, n = 10) %>% # To select the top 10 (per sex)
     ggplot() +
-    geom_col(mapping = aes(x = fct_reorder(name, median_rank), y = median_rank)) +
-    facet_wrap(vars(sex), scales = "free_x") +
+    geom_col(mapping = aes(x = median_rank, y = fct_reorder(name, -median_rank))) +
+    facet_wrap(vars(sex), scales = "free_y") +
     theme_bw() +
-    labs(x = "name", y = "Median Rank")
+    labs(x = "Median Rank", y = "", title = "Top 10 Names by Median Rank")
 
 ```
 

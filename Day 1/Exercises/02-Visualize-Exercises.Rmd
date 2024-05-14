@@ -6,7 +6,8 @@ title: "Visualize Data"
 
 Add a setup chunk that loads the tidyverse packages and the dataset. For the dataset, use 
 ess_mini <- read_rds("data/ess_mini.RDS")
-*after* you have loaded the tidyverse. Remember that the code needs to be inside a code block to work.
+*after* you have loaded the tidyverse (because read_rds comes from the tidyverse). 
+Remember that the code needs to be inside a code block to work.
 
 
 
@@ -14,12 +15,12 @@ ess_mini <- read_rds("data/ess_mini.RDS")
 
 Run the code on the slide to make a graph. Pay strict attention to spelling, capitalization, and parentheses!
 ```{r}
- 
+
 ```
 
 ## Your Turn 2
 
-Add `color`, `size`, `alpha`, and `shape` aesthetics to your graph. Experiment.  
+Add `color`, `size`, `alpha`, and `shape` aesthetics to your graph, inside the aes() function. Experiment.  
 
 ```{r}
 #To start, copy the code from Turn 1
@@ -62,8 +63,9 @@ Bonus: facet it by country
 
 ## Your Turn 5
 
-Use the help page for `geom_histogram` to make the bins 5 units wide.
-Bonus: use the help page for `facet_wrap` to free the scales for the y-axis.
+Use the help page for `geom_histogram` to make the bins 5 units wide. To get there, just type `?geom_histogram` in the Console.
+
+Bonus: use the help page for `facet_wrap` to allow for different scales for the y-axis in each subplot ('free' the scales).
 
 ```{r}
 
@@ -71,7 +73,7 @@ Bonus: use the help page for `facet_wrap` to free the scales for the y-axis.
 
 ## Your Turn 6
 
-Make a bar chart of `main_activity` colored by `country`. Note that `geom_bar` accepts both a `color` and a `fill` aesthetic.
+Make a bar chart of `main_activity` colored by `country`. Note that `geom_bar` accepts both a `color` and a `fill` aesthetic. Try them out to see the difference.
 
 ```{r}
 
@@ -111,31 +113,34 @@ ggplot(data = <DATA>) +
   <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
 ```
 
-Hint: if you want your plots to look more "journal-ready" you can add `+ jtools::theme_apa(legend.use.title = TRUE)` to use that theme provided by the `jtools` package. For that, you need to install that package, e.g. by running `install.packages("jtools")` in the Console.
+NB:You can also change data in each geom_* function, or provide the mappings overall in the ggplot() function - but the template above is a good starting point.
+
+Hint: if you want your plots to look more "journal-ready" you can add `+ jtools::theme_apa(legend.use.title = TRUE)` to use that theme provided by the `jtools` package. For that, you need to install that package, e.g. by running `install.packages("jtools")` in the Console. Alternatively, there are many other themes available in the `ggplot2` ecosystem, some directly within ggplot (e.g., `theme_minimal()`), others in packages (e.g., `ggthemes::theme_economist()`).
 
 ## Complete example - the gapminder graph
 
 This is an example pulling together many different functions - you certainly don't need to understand all of that, but might find it helpful as a starting point for further exploration.
 
 ```{r}
-pacman::p_load(dslabs, jtools, scales) #Teaching package that contains the gapminder dataset
-
+pacman::p_load(dslabs,  #Teaching package that contains the gapminder dataset
+               jtools)  #For the theme_apa function
+               
 #Filter dataset to contain 4 years - we'll learn how to do that next
 gapminder <- gapminder %>% filter(year %in% c(1960, 1980, 2000, 2010)) %>% 
   mutate(gdp_per_capita = gdp/population)
 
 ggplot(gapminder, aes(x=gdp_per_capita, y=life_expectancy, col=continent, size=population/10^6)) +
-  #^ Population converted to millions
+                                                                          #^ Population converted to millions
   geom_point(alpha = .5)  + 
-  scale_x_continuous(trans = scales::log2_trans()) +
-  #Log transformation moved here - that gives nicer labels
-  scale_size(name = "Population (M)", range=c(.1, 15)) + 
-  #Increased range makes largest points larger
-  scale_color_discrete(name="Continent") + 
+  scale_x_log10() + 
+  scale_size(range=c(.1, 15)) +  #Increased range makes largest points larger
+  scale_color_brewer(type = "qual") + 
   facet_wrap(vars(year)) + 
   jtools::theme_apa(legend.use.title = TRUE) + 
   labs(title = "The past 50 years: Greater wealth and greater health",
        x = "GDP per capita (USD/year)",
-       y = "Life expectancy (years)")
+       y = "Life expectancy (years)",
+       color = "Continent",
+       size = "Population (M)")
 ```
 
