@@ -11,15 +11,16 @@ pacman::p_load_gh("lukaswallrich/timesaveR")
 
 ## Your Turn 1
 
-* Add code to the setup chunk to import "qualtrics_example.sav" from the "data" folder. Use `haven::read_sav()`) and assign it to `survey_data`
+* Add code to the setup chunk to import "qualtrics_example.sav" from the "data" folder. Load the `haven` package, then use `read_sav()`) and assign it to `survey_data`
 * Have a look at the data by clicking on it in the environment
 * Run `sjPlot::view_df(survey_data)` and briefly explore the output
 * Run `count(survey_data, Q2.2)` and look at the output
-* Run the ggplot code below and look at the output and warning message
+* Run the ggplot commands below and look at the outputs - what is different? Which is preferable?
+
 
 ```{r}
-
 ggplot(survey_data, aes(Q2.2)) + geom_bar()
+ggplot(survey_data, aes(as_factor(Q2.2))) + geom_bar()
 ```
 
 ## Your Turn 2

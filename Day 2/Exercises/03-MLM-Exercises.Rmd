@@ -4,6 +4,7 @@ title: "Multi-level modeling"
 
 ```{r setup}
 pacman::p_load(tidyverse, broom, lmerTest, sjPlot, glmmTMB)
+pacman::p_load(haven) # Loading haven so that value labels are displayed in ggplot
 ess_work <- read_rds("data/ess_work.RDS")
 ```
 
@@ -15,7 +16,7 @@ ess_work <- read_rds("data/ess_work.RDS")
 
 ```{r}
 ggplot(ess_work, aes(health, happy)) + 
-  geom_jitter(alpha = .1) 
+  geom_jitter(alpha = .1)
 
 ```
 

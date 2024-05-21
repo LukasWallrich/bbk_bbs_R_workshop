@@ -98,7 +98,7 @@ select(babynames, ends_with("n"))
 
 Use `%>%` to write a sequence of functions that: 
 
-1. Filters babynames to just the girls that were born in 2017, *then...*  
+1. Filters babynames to just the boys that were born in 2017, *then...*  
 2. Selects the `name` and `n` columns, *then...*  
 3. Arranges the results so that the most popular names are near the top.
 
